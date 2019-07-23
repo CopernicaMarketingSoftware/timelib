@@ -1,18 +1,18 @@
-FLAGS=-O0 -ggdb3 \
-	-Wall -Werror -Wextra -fsanitize=undefined -fsanitize=address \
+FLAGS=-O2 \
+	-Wall -Werror -Wextra \
 	-Wmaybe-uninitialized -Wmissing-field-initializers -Wshadow -Wno-unused-parameter \
 	-pedantic -Wno-implicit-fallthrough \
-	-DHAVE_STDINT_H -DHAVE_GETTIMEOFDAY -DHAVE_UNISTD_H -DHAVE_DIRENT_H -I.# -DDEBUG_PARSER
+	-DHAVE_STDINT_H -DHAVE_GETTIMEOFDAY -DHAVE_UNISTD_H -DHAVE_DIRENT_H -I.#
 
 CFLAGS=-Wdeclaration-after-statement -fPIC ${FLAGS}
 
 CPPFLAGS=${FLAGS}
 
-LDFLAGS=-lm -fsanitize=undefined -l:libubsan.so.1
+LDFLAGS=-lm
 
 TEST_LDFLAGS=-lCppUTest
 
-VERSION=18.2
+VERSION=18.1
 SHARED=libtimelib.so.${VERSION}
 STATIC=libtimelib.a.${VERSION}
 
@@ -48,13 +48,13 @@ ${STATIC}: ${OBJECTS}
 	ar -rc $@ $^
 	
 ${SHARED}: ${OBJECTS}
-	${CC} ${LDFLAGS} -shared -Wl,-soname,$@ -o $@ $^
+	${CC} -shared -Wl,-soname,$@ -o $@ $^
 	
 install:
 	cp -f timelib.h ${INCLUDEDIR}
 	cp -f ${STATIC} ${SHARED} ${LIBRARYDIR}
-	ln -s ${STATIC} ${LIBRARYDIR}/libtimelib.a
-	ln -s ${SHARED} ${LIBRARYDIR}/libtimelib.so
+	ln -sf ${STATIC} ${LIBRARYDIR}/libtimelib.a
+	ln -sf ${SHARED} ${LIBRARYDIR}/libtimelib.so
 
 tests/tester-diff: ${STATIC} tests/tester-diff.c
 	$(CC) $(CFLAGS) -o tests/tester-diff tests/tester-diff.c ${STATIC} $(LDFLAGS)

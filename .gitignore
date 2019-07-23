@@ -23,7 +23,8 @@ tester-render-ts
 tester-render-ts-zoneinfo
 tests/enumerate-timezones
 tests/date_from_isodate
-timelib.a
+libtimelib.a.*
+libtimelib.so.*
 timelib.o
 timelib_config.h
 tm2unixtime.o
